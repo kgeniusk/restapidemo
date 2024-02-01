@@ -2,10 +2,7 @@ package com.mose.demo.rest;
 
 import com.mose.demo.dao.EmployeeRepository;
 import com.mose.demo.entity.Employee;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,19 +11,44 @@ import java.util.Optional;
 @RequestMapping("/employees")
 public class EmployeeRestController {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     public EmployeeRestController(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
-    @GetMapping("")
+    @GetMapping()
     public List<Employee> listEmployee() {
-        return (List<Employee>) employeeRepository.findAll();
+        return (List<Employee>) this.employeeRepository.findAll();
+    }
+
+    @PostMapping()
+    public Employee createEmployee(@RequestBody Employee employee) {
+        if (this.employeeRepository.findById(employee.getId()).isEmpty()) {
+            throw new IllegalArgumentException("Employee id already exists");
+        }
+        return this.employeeRepository.save(employee);
+    }
+
+    @PutMapping()
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        if (employee.getId() == 0) {
+            throw new IllegalArgumentException("Employee id is required");
+        }
+        if (this.employeeRepository.findById(employee.getId()).isEmpty()) {
+            throw new IllegalArgumentException("Employee does not exist");
+        }
+        return this.employeeRepository.save(employee);
     }
 
     @GetMapping("/{employeeId}")
     public Optional<Employee> getEmployeeById(@PathVariable Integer employeeId) {
-        return employeeRepository.findById(employeeId);
+        return this.employeeRepository.findById(employeeId);
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public String deleteEmployeeById(@PathVariable Integer employeeId) {
+        this.employeeRepository.deleteById(employeeId);
+        return "Employee deleted successfully";
     }
 }
