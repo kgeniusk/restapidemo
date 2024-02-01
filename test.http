@@ -22,6 +22,6 @@ Content-Type: application/json
 ### delete employee
 DELETE http://localhost:8080/employees/9
 
-
 ### list employees
 GET http://localhost:8080/employees
+Authorization: Basic mose sku0ImtOloAqvur2tlnd
