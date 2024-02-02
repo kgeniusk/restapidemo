@@ -2,10 +2,7 @@ package com.mose.demo.rest;
 
 import com.mose.demo.dao.EmployeeRepository;
 import com.mose.demo.entity.Employee;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +17,27 @@ public class EmployeeRestController {
         this.employeeRepository = employeeRepository;
     }
 
-    @GetMapping("")
+    @GetMapping()
     public List<Employee> listEmployee() {
-        return (List<Employee>) employeeRepository.findAll();
+        return (List<Employee>) this.employeeRepository.findAllByOrderByLastName();
     }
 
     @GetMapping("/{employeeId}")
     public Optional<Employee> getEmployeeById(@PathVariable Integer employeeId) {
-        return employeeRepository.findById(employeeId);
+        return this.employeeRepository.findById(employeeId);
+    }
+
+    @PutMapping()
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        if (this.employeeRepository.findById(employee.getId()).isPresent()) {
+            return this.employeeRepository.save(employee);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public void deleteEmployee(@PathVariable Integer employeeId) {
+        this.employeeRepository.deleteById(employeeId);
     }
 }

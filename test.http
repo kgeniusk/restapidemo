@@ -1,0 +1,21 @@
+### List employees
+GET http://localhost:8080/employees
+Accept: application/json
+Authorization: basic mose 1234
+
+### Get single employees
+GET http://localhost:8080/employees/1
+Accept: application/json
+
+### Update single employees
+PUT http://localhost:8080/employees
+Content-Type: application/json
+
+{
+  "id": 10,
+  "firstName": "Mose1",
+  "email": "mose.kim@email.com"
+}
+
+### Delete single employees
+DELETE http://localhost:8080/employees/2
